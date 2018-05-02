@@ -1,0 +1,126 @@
+set autoindent
+set number
+set nowrap
+
+" Hack to fix line numbers and readonly mode after :open ./
+function ChangeWindow()
+    set number
+    set noro
+    set modifiable
+endfunction
+autocmd WinEnter * call ChangeWindow()
+
+let g:eighties_enabled = 0
+
+" Current line highlighting
+set cursorline
+"set cursorcolumn
+hi CursorLine cterm=NONE ctermbg=black
+"hi CursorColumn cterm=NONE ctermbg=black
+
+" configure taglist
+let Tlist_Ctags_Cmd = "/usr/bin/ctags"
+let Tlist_WinWidth = 40
+let Tlist_Use_Right_Window = 1
+let Tlist_Auto_Open = 0
+let Tlist_Exit_OnlyWindow = 1
+map <F9> :TlistToggle<cr>
+
+" folding settings
+"set foldmethod=manual
+"set foldnestmax=10
+"set nofoldenable
+"set foldlevel=1
+
+" Mark column eighty
+set colorcolumn=80
+highlight ColorColumn ctermbg=black
+
+" ShowMarks stuff
+let g:showmarks_include="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+let g:showmarks_textlower=":"
+let updatetime=100
+
+" Highlight trailing whitespace
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+" Indentation settings
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+" Spell check settings
+"setlocal spell spelllang=en_us
+"set spellfile=~/.vim.dict.add
+
+" Custom key bindings
+" F1: save and compile c/c++ program
+map <f1> :w<enter>:!vcc %<enter>
+imap <f1> <esc>:w<enter>:!vcc %<enter>
+" F2: save, compile and run C program
+map <f2> :w<enter>:!vcc %;./a.out<enter>
+imap <f2> <esc>:w<enter>:!vcc %;./a.out<enter>
+" F3: save, compile, ask for arguments, and run C program with arguments
+map <f3> :w<enter>:!vcc %;echo Remember that you cannot have a space in a string;echo "Args: ";read args;./a.out $args<enter>
+imap <f3> <esc>:w<enter>:!vcc %;echo Remember that you cannot have a space in a string;echo "Args:";read args;./a.out $args<enter>
+" F4: save, compile, and run C program with Valgrind to check for memory leaks
+map <f4> :w<enter>:!vcc %;valgrind --leak-check=yes ./a.out<enter>
+imap <f4> <esc>:w<enter>:!vcc %;valgrind --leak-check=yes ./a.out<enter>
+" F5: save and compile multi-file c/c++ program
+map <f5> :wa<enter>:!vcc "$(ls *.c*)"<enter>
+imap <f5> <esc>:wa<enter>:!vcc "$(ls *.c*)"<enter>
+" F6: save, compile and run multi-file c/c++ program
+map <f6> :wa<enter>:!vcc "$(ls *.c*)";./a.out<enter>
+imap <f6> <esc>:wa<enter>:!vcc "$(ls *.c*)";./a.out<enter>
+" Scroll without moving the cursor position
+noremap <C-j> 14j14<C-e>
+noremap <C-k> 14k14<C-y>
+
+
+" For working with split buffers
+"http://stackoverflow.com/questions/11634804/vim-auto-resize-focused-window
+nnoremap <C-j>  <C-w>j
+nnoremap <C-k>  <C-w>k
+nnoremap <C-h>  <C-w>h
+nnoremap <C-l>  <C-w>l
+nnoremap c<C-j> :bel sp new<cr>
+nnoremap c<C-k> :abo sp new<cr>
+nnoremap c<C-h> :lefta vsp new<cr>
+nnoremap c<C-l> :rightb vsp new<cr>
+nnoremap g<C-j> <C-w>j<C-w>_
+nnoremap g<C-k> <C-w>k<C-w>_
+nnoremap g<C-h> <C-w>h<C-w>_
+nnoremap g<C-l> <C-w>l<C-w>_
+nnoremap d<C-j> <C-w>j<C-w>c
+nnoremap d<C-k> <C-w>k<C-w>c
+nnoremap d<C-h> <C-w>h<C-w>c
+nnoremap d<C-l> <C-w>l<C-w>c
+
+
+" Remember stuff between vim sessions
+"
+" http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+" Tell vim to remember certain things when we exit
+"  '10  :  marks will be remembered for up to 10 previously edited files
+"  "100 :  will save up to 100 lines for each register
+"  :20  :  up to 20 lines of command-line history will be remembered
+"  %    :  saves and restores the buffer list
+"  n... :  where to save the viminfo files
+set viminfo='10,\"100,:20,%,n~/.viminfo
+
+function! ResCur()
+  if line("'\"") <= line("$")
+    normal! g`"
+    return 1
+  endif
+endfunction
+
+augroup resCur
+  autocmd!
+  autocmd BufWinEnter * call ResCur()
+augroup END

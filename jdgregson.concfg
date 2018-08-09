@@ -13,7 +13,7 @@
     "fullscreen":  false,
     "num_history_buffers":  4,
     "screen_colors":  "dark_gray,black",
-    "popup_colors":  "yellow,white",
+    "popup_colors":  "dark_cyan,yellow",
     "screen_buffer_size":  "116x3000",
     "dark_green":  "#859900",
     "window_size":  "116x47",
@@ -31,5 +31,5 @@
     "gray":  "#eee8d5",
     "white":  "#99bdbd",
     "black":  "#263238",
-    "dark_cyan":  "#2aa198"
+    "dark_cyan":  "#2b787b"
 }

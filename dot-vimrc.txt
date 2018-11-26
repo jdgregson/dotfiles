@@ -124,3 +124,6 @@ augroup resCur
   autocmd!
   autocmd BufWinEnter * call ResCur()
 augroup END
+
+" Disable annoying menu when you press q before :
+map q <Nop>
